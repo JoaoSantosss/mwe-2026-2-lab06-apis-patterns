@@ -82,6 +82,25 @@ export const MAPA_DE_SITUACAO: Record<string, StatusRastreio> = {
 export class AdaptadorRastreioLegado {
   adaptar(bruto: RastreioLegado): Rastreio {
     // TODO-4: troque este repasse pela tradução descrita acima.
-    return bruto as unknown as Rastreio;
+    const rastreio: Rastreio = {
+      codigoRastreio: bruto.COD_OBJ.trim(),
+      status: MAPA_DE_SITUACAO[bruto.SIT] ?? 'desconhecido',
+      atualizadoEm: this.converterData(bruto.DT_ULT_MOV),
+      uf: bruto.UF_ULT.toUpperCase(),
+      descricao: bruto.DESC_SIT ?? '',
+    }
+
+    return rastreio;
+  }
+  
+  converterData(data: string): string {
+    const partes = data.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/);
+
+    if (!partes) {
+      return '';
+    }
+
+    const [, dia, mes, ano, hora, minuto] = partes;
+    return `${ano}-${mes}-${dia}T${hora}:${minuto}:00`;
   }
 }
