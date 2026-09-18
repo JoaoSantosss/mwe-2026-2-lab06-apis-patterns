@@ -71,7 +71,9 @@ class EstrategiaFrete(Protocol):
     """
 
     # Apague este `pass` e escreva o contrato descrito acima.
-    pass
+    modalidade : str
+
+    def cotar(self, distancia_km : float, peso_kg : float) -> Cotacao: ...
 
 
 # ---------------------------------------------------------------------------
