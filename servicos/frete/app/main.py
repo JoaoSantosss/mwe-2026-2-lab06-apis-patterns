@@ -23,7 +23,7 @@ from fastapi import FastAPI, HTTPException
 
 from .distancias import distancia_km
 from .modelos import PedidoCotacao, RespostaCotacao, RespostaSaude
-from .registro import modalidades
+from .registro import modalidades, obter
 
 app = FastAPI(
     title="LogiTech Frete",
@@ -64,20 +64,8 @@ def cotar(pedido: PedidoCotacao) -> RespostaCotacao:
     """
     distancia = distancia_km(pedido.origem, pedido.destino)
 
-    # TODO-3: este bloco inteiro sai daqui.
-    if pedido.modalidade == "expresso":
-        valor = round(distancia * 0.85 + pedido.pesoKg * 1.20, 2)
-        prazo = max(1, ceil(distancia / 700))
-    elif pedido.modalidade == "economico":
-        valor = round(distancia * 0.42 + pedido.pesoKg * 0.55, 2)
-        prazo = ceil(distancia / 350) + 2
-    elif pedido.modalidade == "padrao":
-        valor = round(distancia * 0.60 + pedido.pesoKg * 0.80, 2)
-        prazo = ceil(distancia / 500) + 1
-    else:
-        raise HTTPException(
-            status_code=422,
-            detail="modalidade não suportada: %s" % pedido.modalidade)
+    modalidade = obter(pedido.modalidade)
+    cotacao = modalidade.cotar(distancia, pedido.pesoKg)
 
-    return RespostaCotacao(valor=valor, prazoDias=prazo,
+    return RespostaCotacao(valor=cotacao.valor_base, prazoDias=cotacao.prazo_dias,
                            modalidade=pedido.modalidade)

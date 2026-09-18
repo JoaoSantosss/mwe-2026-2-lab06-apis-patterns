@@ -64,6 +64,6 @@ def modalidades() -> list[str]:
 
 
 # TODO-3: descomente e complete o registro das três modalidades originais.
-# registrar(FreteExpresso())
-# registrar(FreteEconomico())
-# registrar(FretePadrao())
+registrar(FreteExpresso())
+registrar(FreteEconomico())
+registrar(FretePadrao())
