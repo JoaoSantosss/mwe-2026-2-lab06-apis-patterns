@@ -71,9 +71,9 @@ class EstrategiaFrete(Protocol):
     """
 
     # Apague este `pass` e escreva o contrato descrito acima.
-    modalidade : str
+    modalidade: str
 
-    def cotar(self, distancia_km : float, peso_kg : float) -> Cotacao: ...
+    def cotar(self, distancia_km: float, peso_kg: float) -> Cotacao: ...
 
 
 # ---------------------------------------------------------------------------
@@ -90,8 +90,11 @@ class FreteExpresso:
         # TODO-2: devolva uma `Cotacao` usando `valor_base` com os custos
         # desta classe e o prazo `ceil(distancia_km / 700)`, com mínimo de
         # 1 dia. `ceil` já está importado no topo do arquivo.
-        raise NotImplementedError(
-            "TODO-2: FreteExpresso.cotar ainda não foi implementado")
+        return Cotacao(
+            valor_base(distancia_km, peso_kg, self.custo_por_km, self.custo_por_kg),
+            max(1, ceil(distancia_km / 700)),
+            self.modalidade,
+        )
 
 
 class FreteEconomico:
@@ -103,8 +106,11 @@ class FreteEconomico:
 
     def cotar(self, distancia_km: float, peso_kg: float) -> Cotacao:
         # TODO-2: prazo `ceil(distancia_km / 350) + 2`.
-        raise NotImplementedError(
-            "TODO-2: FreteEconomico.cotar ainda não foi implementado")
+        return Cotacao(
+            valor_base(distancia_km, peso_kg, self.custo_por_km, self.custo_por_kg),
+            ceil(distancia_km / 350) + 2,
+            self.modalidade,
+        )
 
 
 class FretePadrao:
@@ -116,5 +122,8 @@ class FretePadrao:
 
     def cotar(self, distancia_km: float, peso_kg: float) -> Cotacao:
         # TODO-2: prazo `ceil(distancia_km / 500) + 1`.
-        raise NotImplementedError(
-            "TODO-2: FretePadrao.cotar ainda não foi implementado")
+        return Cotacao(
+            valor_base(distancia_km, peso_kg, self.custo_por_km, self.custo_por_kg),
+            ceil(distancia_km / 500) + 1,
+            self.modalidade,
+        )
