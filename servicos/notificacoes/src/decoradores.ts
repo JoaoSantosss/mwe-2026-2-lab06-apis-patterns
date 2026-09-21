@@ -98,7 +98,18 @@ export class ComRetentativa implements Enviador {
   async enviar(notificacao: Notificacao): Promise<ResultadoEnvio> {
     // TODO-6: transforme a chamada única abaixo no laço descrito na
     // documentação da classe.
-    return this.interno.enviar(notificacao);
+    for (let tentativa = 1; tentativa <= this.maxTentativas; tentativa++) {
+      try {
+        const resultado = await this.interno.enviar(notificacao);
+        return new Promise((resolve) => resolve({ ...resultado, tentativas: tegit commit -am "feat(todo-6): ComRetentativa empilhavel"ntativa }));
+      } catch (erro) {
+        if (tentativa === this.maxTentativas) {
+          throw erro;
+        }
+        await espere(this.esperaMs);
+      }
+    }
+    throw new Error('Falha inesperada: não deveria chegar aqui');
   }
 }
 
