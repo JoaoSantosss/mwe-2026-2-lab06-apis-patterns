@@ -45,7 +45,16 @@ export class ComLog implements Enviador {
 
   async enviar(notificacao: Notificacao): Promise<ResultadoEnvio> {
     // TODO-5: envolva a chamada abaixo com as quatro etapas da documentação.
-    return this.interno.enviar(notificacao);
+    this.log.registrar(`tentativa canal=${this.canal} destinatario=${notificacao.destinatario}`);
+    try {
+      const resultado = await this.interno.enviar(notificacao);
+      this.log.registrar(`sucesso canal=${this.canal} identificador=${resultado.identificador}`);
+      return resultado;
+    } catch (erro) {
+      const motivo = erro instanceof Error ? erro.message : String(erro);
+      this.log.registrar(`falha canal=${this.canal} motivo=${motivo}`);
+      throw erro;
+    }
   }
 }
 
